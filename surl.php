@@ -75,10 +75,10 @@ for($i=0;$i<$nr_requests;$i++)
 	$delta = (string)hit_("http://${origin2}${files[1]}", '',  $ologin, $opass);
 	if(empty($o2stats[$delta])) $o2stats[$delta]=0;
 	$o2stats[$delta]++;
-	$delta = (string)hit_("http://${l2}${testfile}?cdn_hash=" . md5("${testfile}${zonepass}") , 'a7-57.clients.cdn13.com');
+	$delta = (string)hit_("http://${l2}${testfile}?cdn_hash=" . md5("${testfile}${zonepass}") , $zonename);
 	if(empty($l2stats[$delta])) $l2stats[$delta]=0;
 	$l2stats[$delta]++;
-	$delta = (string)hit_("http://${l1}${testfile}?cdn_hash=" . md5("${testfile}${zonepass}") , 'a7-57.clients.cdn13.com');
+	$delta = (string)hit_("http://${l1}${testfile}?cdn_hash=" . md5("${testfile}${zonepass}") , $zonename);
 	if(empty($l1stats[$delta])) $l1stats[$delta]=0;
 	$l1stats[$delta]++;
 	usleep(200000);
