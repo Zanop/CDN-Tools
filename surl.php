@@ -9,7 +9,7 @@
 *                   'cookie' => '',
 *                   'post_fields' => '',
 *                    ['login' => '',]
-*                    ['password' => '',]
+*                    ['password' => '',]     
 *                   'timeout' => 0
 *                   );
 */
@@ -22,11 +22,11 @@ function microtime_float()
     return ((float)$usec + (float)$sec);
 }
 
-function report($stats)
+function report($stats) 
 {
 	global $nr_requests;
 	echo "Time[s]\t \tPercent(Hits)\n";
-	foreach ( $stats as $time => $count )
+	foreach ( $stats as $time => $count ) 
 	{
 		$percent = round(100*($count/$nr_requests), 2);
 		echo "${time}\t<=\t${percent}% (${count} hits)\n";
@@ -44,11 +44,15 @@ function hit_($url, $vhost=NULL, $login=NULL, $password=NULL)
 	curl_setopt($ch, CURLOPT_NOBODY, true);
 	$start=microtime_float();
 	if(!curl_exec($ch)) die("Cant exec curl request!");
-	//print_r(curl_getinfo($ch));
 	$end=microtime_float();
+	
+	$status=curl_getinfo($ch);
+	if($status['http_code'] != 200 )
+		die("Http repsponse code ${status['http_code']} returned by $url!");
+	//print_r(curl_getinfo($ch));
 	$delta=round($end-$start, 2);
 	curl_close($ch);
-	if($delta < 1 )
+	if($delta < 1 ) 
 	{
 		echo ".";
 	}
@@ -64,11 +68,11 @@ $testfile=$files[2];
 
 for($i=0;$i<$nr_requests;$i++)
 {
-
-	$delta = (string)hit_("http://${origin1}${testfile}", '',  "", "");
+	
+	$delta = (string)hit_("http://${origin1}${testfile}", '',  $ologin, $opass);
 	if(empty($o1stats[$delta])) $o1stats[$delta]=0;
 	$o1stats[$delta]++;
-	$delta = (string)hit_("http://${origin2}${files[1]}", '',  "", "");
+	$delta = (string)hit_("http://${origin2}${files[1]}", '',  $ologin, $opass);
 	if(empty($o2stats[$delta])) $o2stats[$delta]=0;
 	$o2stats[$delta]++;
 	$delta = (string)hit_("http://${l2}${testfile}?cdn_hash=" . md5("${testfile}${zonepass}") , 'a7-57.clients.cdn13.com');
