@@ -25,12 +25,15 @@ function microtime_float()
 function report($stats) 
 {
 	global $nr_requests;
+	$slow=0;
 	echo "Time[s]\t \tPercent(Hits)\n";
 	foreach ( $stats as $time => $count ) 
 	{
 		$percent = round(100*($count/$nr_requests), 2);
 		echo "${time}\t<=\t${percent}% (${count} hits)\n";
+		if( $time > 1 ) $slow+=$count;
 	}
+	echo "Slow requests: " . round(100*($slow/$nr_requests), 2) ."%\n";
 }
 
 function hit_($url, $vhost=NULL, $login=NULL, $password=NULL)
@@ -45,20 +48,20 @@ function hit_($url, $vhost=NULL, $login=NULL, $password=NULL)
 	$start=microtime_float();
 	if(!curl_exec($ch)) die("Cant exec curl request!");
 	$end=microtime_float();
-	
 	$status=curl_getinfo($ch);
 	if($status['http_code'] != 200 )
 		die("Http repsponse code ${status['http_code']} returned by $url!");
 	//print_r(curl_getinfo($ch));
-	$delta=round($end-$start, 2);
 	curl_close($ch);
+	$delta=round($end-$start, 1);
 	if($delta < 1 ) 
 	{
-		echo ".";
+//		echo ".";
+		$delta=round($end-$start, 1);
 	}
 	else
 	{
-		echo "-${delta}-";
+//		echo "-${delta}-";
 		$delta = round($delta,0);
 	}
 	return($delta);
