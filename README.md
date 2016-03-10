@@ -1,1 +1,1 @@
-Tools to help ucdn admins
+Tools to help cdn admins
